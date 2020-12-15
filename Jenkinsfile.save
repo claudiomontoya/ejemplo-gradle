@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+    stages {
+        stage('Compile Code') {
+            steps {
+                sh 'mvn clean compile -e'
+            }
+        }
+        stage('Test Code') {
+            steps {              
+                sh 'mvn clean test -e'
+            }
+        }
+        stage('Jar ') {
+            steps {               
+                sh 'mvn clean package -e'
+            }
+        }
+        stage('SonarQube analysis') {
+           steps {
+             withSonarQubeEnv(installationName: 'sonar') { 
+             sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugif         }
+        }
+        stage('Upload Nexus Dev2') {
+            steps {               
+                nexusPublisher nexusInstanceId: 'nexusdev2', nexusRepositoryId: 'test-repo', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: 'jar', filePath: '/Users/servidorcasa/Documents/
